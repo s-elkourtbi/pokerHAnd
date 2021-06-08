@@ -180,6 +180,17 @@ public class EvaluateHand {
                 .findFirst().get();
     }
 
+    private static Integer twoPairWinnerCard(Hand hand){
+        List<Integer> cardValue = getValueOfHand(hand);
+        List<Integer> pair = new ArrayList<>();
+        for (int i = 0; i <= 3; i++){
+            if(cardValue.get(i) == cardValue.get(i+1)) {
+                pair.add(cardValue.get(i));
+            }
+        }
+        return pair.get(1);
+    }
+
     /**
      * To get winner card.
      * @param hand
@@ -206,11 +217,11 @@ public class EvaluateHand {
                 winnerCard = getKey(cardValueMAp, 3L);
                 break;
             case TWOPAIR:
-                System.out.println("two pair");
+                winnerCard = twoPairWinnerCard(hand);
+                break;
             case PAIR:
                 winnerCard = getKey(cardValueMAp, 2L);
                 break;
-
             default:
                 winnerCard = cardValue.get(4);
                 break;
