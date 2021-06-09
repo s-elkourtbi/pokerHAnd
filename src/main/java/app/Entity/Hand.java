@@ -33,4 +33,9 @@ public class Hand {
      * classification of hand rank from 1 to 9 used to compare different Hand.
      */
     public Integer rank;
+
+    /**
+     * The winner card.
+     */
+    public Integer winner;
 }

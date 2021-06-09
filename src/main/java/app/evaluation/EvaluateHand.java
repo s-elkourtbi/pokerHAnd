@@ -132,41 +132,57 @@ public class EvaluateHand {
      * @return
      */
     public static Hand evaluateHand(Hand hand) {
+        List<Integer> cardValue = getValueOfHand(hand);
+        Map<Integer, Long> cardValueMAp =
+                cardValue.stream().collect(
+                        Collectors.groupingBy(
+                                Function.identity(), Collectors.counting()
+                        )
+                );
         if (isStraightFlush(hand)) {
             hand.handRank = HandRank.STRAIGHTFLUSH;
             hand.rank = Integer.valueOf(9);
+            hand.winner = cardValue.get(4);
             return hand;
         } else if (isFourKind(hand)) {
             hand.handRank = HandRank.FOUROFAKIND;
             hand.rank = Integer.valueOf(8);
+            hand.winner = getKey(cardValueMAp, 4L);
             return hand;
         } else if (isFullHouse(hand)) {
             hand.handRank = HandRank.FULLHOUSE;
             hand.rank = Integer.valueOf(7);
+            hand.winner = getKey(cardValueMAp, 3L);
             return hand;
         } else if (isFlush(hand)) {
             hand.handRank = HandRank.FLUSH;
             hand.rank = Integer.valueOf(6);
+            hand.winner = cardValue.get(4);
             return hand;
         } else if (isStraight(hand)) {
             hand.handRank = HandRank.STRAIGHT;
             hand.rank = Integer.valueOf(5);
+            hand.winner = cardValue.get(4);
             return hand;
         } else if (isThreeOfKind(hand)) {
             hand.handRank = HandRank.THREEOFAKIND;
             hand.rank = Integer.valueOf(4);
+            hand.winner = getKey(cardValueMAp, 3L);
             return hand;
         } else if (nombreDePair(hand) == 3) {
             hand.handRank = HandRank.TWOPAIR;
             hand.rank = Integer.valueOf(3);
+            hand.winner = twoPairWinnerCard(hand);
             return hand;
         } else if (nombreDePair(hand) == 4) {
             hand.handRank = HandRank.PAIR;
             hand.rank = Integer.valueOf(2);
+            hand.winner = getKey(cardValueMAp, 2L);
             return hand;
         } else {
             hand.handRank = HandRank.HIGHCARD;
             hand.rank = Integer.valueOf(1);
+            hand.winner = cardValue.get(4);
             return hand;
         }
     }
@@ -195,7 +211,7 @@ public class EvaluateHand {
      * To get winner card.
      * @param hand
      * @return
-     */
+
     private static Integer getWinnerCard(Hand hand) {
         Integer winnerCard;
         List<Integer> cardValue = getValueOfHand(hand);
@@ -229,6 +245,7 @@ public class EvaluateHand {
         }
         return winnerCard;
     }
+    */
 
     /**
      * Methode evaluating two hand and return the winner hand.
@@ -237,28 +254,26 @@ public class EvaluateHand {
      * @return
      */
     public static Hand evaluateTwoHand(Hand firstHand, Hand secondHand) {
+
         Hand blackHand = evaluateHand(firstHand);
         Hand whiteHand = evaluateHand(secondHand);
 
-        Integer blackHandWinnerCard = getWinnerCard(firstHand);
-        Integer whiteHandWinnerCard = getWinnerCard(secondHand);
-
         if(blackHand.rank == whiteHand.rank){
-            if(blackHandWinnerCard == whiteHandWinnerCard) {
+            if(blackHand.winner == whiteHand.winner) {
                 System.out.println("Same Hand No Winner !!");
                 return null;
-            } else if (blackHandWinnerCard > whiteHandWinnerCard) {
-                System.out.println("Black wins. - with " +blackHand.handRank + ": " + blackHandWinnerCard);
+            } else if (blackHand.winner > whiteHand.winner) {
+                System.out.println("Black wins. - with " +blackHand.handRank + ": " + blackHand.winner);
                 return blackHand;
             } else {
-                System.out.println("White wins. - with " +whiteHand.handRank + ": " + whiteHandWinnerCard);
+                System.out.println("White wins. - with " +whiteHand.handRank + ": " + whiteHand.winner);
                 return whiteHand;
             }
         } else if(blackHand.rank > whiteHand.rank) {
-            System.out.println("Black wins. - with " +blackHand.handRank + ": " + blackHandWinnerCard);
+            System.out.println("Black wins. - with " +blackHand.handRank + ": " + blackHand.winner);
             return blackHand;
         } else {
-            System.out.println("White wins. - with " +whiteHand.handRank + ": " + whiteHandWinnerCard);
+            System.out.println("White wins. - with " +whiteHand.handRank + ": " + whiteHand.winner);
             return whiteHand;
         }
     }
